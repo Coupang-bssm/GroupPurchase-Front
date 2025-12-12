@@ -1,0 +1,244 @@
+.comment-item {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.comment-content-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.comment-author {
+  font-weight: 500;
+  color: #030303;
+  font-size: 0.8125rem;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.comment-date {
+  font-size: 0.75rem;
+  color: #606060;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.comment-text {
+  color: #030303;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.comment-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 18px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #606060;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.comment-action-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.comment-action-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.reply-btn {
+  color: #065fd4;
+}
+
+.reply-btn:hover {
+  background-color: rgba(6, 95, 212, 0.1);
+}
+
+.delete-btn {
+  color: #c33;
+}
+
+.delete-btn:hover {
+  background-color: rgba(204, 51, 51, 0.1);
+}
+
+.delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.view-replies-btn {
+  margin-top: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 18px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #065fd4;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.view-replies-btn:hover {
+  background-color: rgba(6, 95, 212, 0.1);
+}
+
+.view-replies-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.reply-form {
+  margin-top: 0.75rem;
+  margin-left: 3rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.reply-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.reply-form-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.reply-input {
+  width: 100%;
+  padding: 0.5rem 0;
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.875rem;
+  font-family: inherit;
+  resize: none;
+  transition: border-color 0.2s;
+  background: transparent;
+  min-height: 1.5rem;
+}
+
+.reply-input:focus {
+  border-bottom-color: #030303;
+  outline: none;
+}
+
+.reply-input::placeholder {
+  color: #606060;
+}
+
+.reply-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.cancel-btn {
+  padding: 0.625rem 1rem;
+  background: transparent;
+  color: #606060;
+  border: none;
+  border-radius: 18px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.cancel-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.submit-btn {
+  padding: 0.625rem 1rem;
+  background-color: #065fd4;
+  color: white;
+  border: none;
+  border-radius: 18px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: #0650c2;
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.comment-children {
+  margin-top: 0.5rem;
+  margin-left: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-left: 1rem;
+  border-left: 1px solid #e0e0e0;
+}
+
