@@ -11,7 +11,7 @@ export default function ProductList() {
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-  const { data, isLoading } = useQuery(
+  const { isLoading } = useQuery(
     ['products', lastId],
     () => productAPI.getList(lastId, 10),
     {

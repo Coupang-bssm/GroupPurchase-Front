@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { groupPurchaseAPI, productAPI, commentAPI } from '@/utils/api';
+import { groupPurchaseAPI, productAPI } from '@/utils/api';
 import { getCurrentUserId } from '@/utils/auth';
 import CommentSection from '@/components/CommentSection';
 import './GroupPurchaseDetail.css';

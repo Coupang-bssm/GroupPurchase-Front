@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { productAPI } from '@/utils/api';
-import { getCurrentUserRole, getCurrentUserId } from '@/utils/auth';
+import { getCurrentUserRole } from '@/utils/auth';
 import './ProductDetail.css';
 
 export default function ProductDetail() {
@@ -10,7 +10,6 @@ export default function ProductDetail() {
   const queryClient = useQueryClient();
   const productId = parseInt(id || '0', 10);
   const role = getCurrentUserRole();
-  const userId = getCurrentUserId();
 
   const { data: product, isLoading } = useQuery(
     ['product', productId],

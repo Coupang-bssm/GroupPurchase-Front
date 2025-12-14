@@ -19,7 +19,7 @@ export default function ProductCreate() {
     (data: { name: string; description: string; price: number; imageUrl: string }) =>
       productAPI.create(data),
     {
-      onSuccess: (response, variables) => {
+      onSuccess: () => {
         queryClient.invalidateQueries('products');
         alert('상품이 등록되었습니다.');
         navigate('/products');
