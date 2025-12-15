@@ -41,7 +41,7 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
-    if (token) {
+    if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -170,7 +170,8 @@ export const groupPurchaseAPI = {
   },
 
   update: async (gpId: number, data: UpdateGroupPurchaseRequest): Promise<void> => {
-    await apiClient.put(`/api/group-purchase/${gpId}`, data);
+    const response = await apiClient.put(`/api/group-purchase/${gpId}`, data);
+    return response.data;
   },
 
   delete: async (gpId: number): Promise<DeleteGroupPurchaseResponse> => {

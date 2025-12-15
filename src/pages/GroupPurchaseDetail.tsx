@@ -112,7 +112,11 @@ export default function GroupPurchaseDetail() {
       updateData.targetCount = parseInt(editForm.targetCount, 10);
     }
     if (editForm.deadline !== gp?.deadline.slice(0, 16)) {
-      updateData.deadline = editForm.deadline;
+      // datetime-local 형식(yyyy-MM-ddTHH:mm)을 ISO 형식(yyyy-MM-ddTHH:mm:ss)으로 변환
+      const deadlineDate = new Date(editForm.deadline);
+      if (!isNaN(deadlineDate.getTime())) {
+        updateData.deadline = deadlineDate.toISOString().slice(0, 19);
+      }
     }
     if (editForm.status !== gp?.status) updateData.status = editForm.status;
 

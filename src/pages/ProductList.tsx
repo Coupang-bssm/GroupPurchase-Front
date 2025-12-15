@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { productAPI } from '@/utils/api';
+import { getCurrentUserRole } from '@/utils/auth';
 import type { Product } from '@/types';
 import './ProductList.css';
 
@@ -10,6 +11,7 @@ export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const role = getCurrentUserRole();
 
   const { isLoading } = useQuery(
     ['products', lastId],
@@ -63,7 +65,14 @@ export default function ProductList() {
 
   return (
     <div className="product-list">
-      <h1>상품 목록</h1>
+      <div className="list-header">
+        <h1>상품 목록</h1>
+        {role === 'ADMIN' && (
+          <Link to="/products/create" className="create-btn">
+            상품 등록
+          </Link>
+        )}
+      </div>
       <div className="products-grid">
         {products.map((product) => (
           <Link key={product.id} to={`/products/${product.id}`} className="product-card">
