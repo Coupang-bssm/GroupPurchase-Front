@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { groupPurchaseAPI } from '@/utils/api';
@@ -8,6 +8,8 @@ import './GroupPurchaseList.css';
 export default function GroupPurchaseList() {
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState<'all' | 'my'>('all');
+  const [allMyGPs, setAllMyGPs] = useState<any[]>([]);
+  const [myGPLoading, setMyGPLoading] = useState(false);
   const size = 10;
   const userId = getCurrentUserId();
 
@@ -16,19 +18,67 @@ export default function GroupPurchaseList() {
     () => groupPurchaseAPI.getList(page, size),
     {
       keepPreviousData: true,
+      enabled: filter === 'all',
     }
   );
 
+  // "내 공동구매" 필터일 때 모든 페이지를 가져와서 필터링
+  useEffect(() => {
+    if (filter === 'my' && userId !== null) {
+      setMyGPLoading(true);
+      const fetchAllMyGPs = async () => {
+        const allGPs: any[] = [];
+        let currentPage = 0;
+        let hasMore = true;
+
+        while (hasMore) {
+          try {
+            const response = await groupPurchaseAPI.getList(currentPage, 100); // 큰 사이즈로 가져오기
+            const myGPs = response.content.filter((gp) => gp.hostUserId === userId);
+            allGPs.push(...myGPs);
+            
+            if (response.last || response.content.length === 0) {
+              hasMore = false;
+            } else {
+              currentPage++;
+            }
+          } catch (err) {
+            console.error('공동구매 목록 조회 실패:', err);
+            hasMore = false;
+          }
+        }
+        setAllMyGPs(allGPs);
+        setMyGPLoading(false);
+      };
+      fetchAllMyGPs();
+    } else {
+      setAllMyGPs([]);
+    }
+  }, [filter, userId]);
+
   // 필터링된 목록
-  const filteredContent = filter === 'my' && userId !== null
-    ? data?.content.filter((gp) => gp.hostUserId === userId) || []
+  const filteredContent = filter === 'my'
+    ? allMyGPs
     : data?.content || [];
 
-  if (isLoading) {
+  // 필터링된 결과의 페이지네이션
+  const itemsPerPage = 10;
+  const totalFilteredPages = Math.ceil(filteredContent.length / itemsPerPage);
+  const currentFilteredPage = filter === 'my' ? page : 0;
+  const startIndex = currentFilteredPage * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedContent = filter === 'my'
+    ? filteredContent.slice(startIndex, endIndex)
+    : filteredContent;
+
+  const displayLoading = filter === 'all' ? isLoading : myGPLoading;
+  const displayError = filter === 'all' ? error : null;
+
+  if (displayLoading && filteredContent.length === 0) {
     return <div className="loading">로딩 중...</div>;
   }
 
-  if (error) {
+  if (displayError) {
     return <div className="error">공동구매 목록을 불러오는데 실패했습니다.</div>;
   }
 
@@ -63,7 +113,7 @@ export default function GroupPurchaseList() {
         </div>
       </div>
       <div className="gp-grid">
-        {filteredContent.map((gp) => (
+        {paginatedContent.map((gp) => (
           <Link key={gp.id} to={`/group-purchases/${gp.id}`} className="gp-card">
             <div className="gp-header">
               <h3>{gp.title}</h3>
@@ -91,12 +141,12 @@ export default function GroupPurchaseList() {
           </Link>
         ))}
       </div>
-      {filteredContent.length === 0 && !isLoading && (
+      {filteredContent.length === 0 && !displayLoading && (
         <div className="empty">
           {filter === 'my' ? '내 공동구매가 없습니다.' : '공동구매가 없습니다.'}
         </div>
       )}
-      {data && (
+      {filter === 'all' && data && (
         <div className="pagination">
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
@@ -111,6 +161,27 @@ export default function GroupPurchaseList() {
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={data.last}
+            className="page-btn"
+          >
+            다음
+          </button>
+        </div>
+      )}
+      {filter === 'my' && filteredContent.length > 0 && (
+        <div className="pagination">
+          <button
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={currentFilteredPage === 0}
+            className="page-btn"
+          >
+            이전
+          </button>
+          <span className="page-info">
+            {currentFilteredPage + 1} / {totalFilteredPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => p + 1)}
+            disabled={currentFilteredPage >= totalFilteredPages - 1}
             className="page-btn"
           >
             다음
