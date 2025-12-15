@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { productAPI } from '@/utils/api';
 import { getCurrentUserRole } from '@/utils/auth';
-import { getErrorMessage } from '@/utils/errorHandler';
+import { getErrorMessage, extractErrorResponse } from '@/utils/errorHandler';
 import './ProductDetail.css';
 
 export default function ProductDetail() {
@@ -59,16 +59,13 @@ export default function ProductDetail() {
         navigate('/products');
       },
       onError: (error: unknown) => {
-        const errorMessage = getErrorMessage(error, '상품 삭제에 실패했습니다.');
+        const errorResponse = extractErrorResponse(error);
         
-        // 공동구매 관련 에러 메시지 확인
-        if (
-          errorMessage.includes('공동구매') ||
-          errorMessage.includes('group purchase') ||
-          errorMessage.includes('group-purchase')
-        ) {
+        // 500 에러인 경우 공동구매 관련 에러로 간주
+        if (errorResponse.status === 500) {
           alert('해당 상품은 공동구매가 열려있어 삭제할 수 없습니다.\n먼저 관련된 공동구매를 삭제해주세요.');
         } else {
+          const errorMessage = getErrorMessage(error, '상품 삭제에 실패했습니다.');
           alert(errorMessage);
         }
       },
