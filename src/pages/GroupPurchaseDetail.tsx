@@ -131,7 +131,8 @@ export default function GroupPurchaseDetail() {
     return <div className="error">공동구매를 찾을 수 없습니다.</div>;
   }
 
-  const isHost = gp.hostUserId === userId;
+  // userId와 hostUserId를 모두 숫자로 변환하여 비교
+  const isHost = userId !== null && Number(gp.hostUserId) === Number(userId);
   const progressPercent = Math.min((gp.currentCount / gp.targetCount) * 100, 100);
 
   return (
