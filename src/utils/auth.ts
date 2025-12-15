@@ -28,7 +28,17 @@ export function getCurrentUserRole(): 'ADMIN' | 'USER' | null {
   if (!token) return null;
 
   const payload = decodeJwt(token);
-  return payload?.role || null;
+  if (!payload?.role) return null;
+
+  // 백엔드에서 "ROLE_ADMIN" 또는 "ADMIN" 형식으로 올 수 있음
+  const role = payload.role.toUpperCase();
+  if (role === 'ROLE_ADMIN' || role === 'ADMIN') {
+    return 'ADMIN';
+  }
+  if (role === 'ROLE_USER' || role === 'USER') {
+    return 'USER';
+  }
+  return null;
 }
 
 /**

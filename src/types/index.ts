@@ -172,7 +172,7 @@ export interface DeleteCommentResponse {
 // JWT 토큰 페이로드 타입
 export interface JwtPayload {
   sub: string;
-  role: 'ADMIN' | 'USER';
+  role: string; // 백엔드에서 "ROLE_ADMIN", "ROLE_USER", "ADMIN", "USER" 등 다양한 형식으로 올 수 있음
   iat: number;
   exp: number;
 }
