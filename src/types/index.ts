@@ -56,6 +56,13 @@ export interface CreateProductResponse {
   message: string;
 }
 
+export interface UpdateProductRequest {
+  name?: string;
+  description?: string;
+  price?: number;
+  imageUrl?: string;
+}
+
 export interface DeleteProductResponse {
   productId: number;
   message: string;

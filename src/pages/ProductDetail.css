@@ -61,6 +61,25 @@
   margin-bottom: 0.5rem;
 }
 
+.product-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.edit-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #fa622f;
+  color: white;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.edit-btn:hover {
+  background-color: #e04f1f;
+}
+
 .delete-btn {
   background-color: #dc3545;
   color: white;
@@ -75,6 +94,75 @@
 }
 
 .delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.edit-product-form {
+  width: 100%;
+}
+
+.edit-product-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.edit-product-form .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.edit-product-form .form-group input,
+.edit-product-form .form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.edit-product-form .form-group input:focus,
+.edit-product-form .form-group textarea:focus {
+  border-color: #fa622f;
+  outline: none;
+}
+
+.edit-form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.cancel-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #6c757d;
+  color: white;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.cancel-btn:hover {
+  background-color: #5a6268;
+}
+
+.submit-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #fa622f;
+  color: white;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: #e04f1f;
+}
+
+.submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

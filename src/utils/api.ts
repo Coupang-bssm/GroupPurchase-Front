@@ -10,6 +10,7 @@ import type {
   Product,
   CreateProductRequest,
   CreateProductResponse,
+  UpdateProductRequest,
   DeleteProductResponse,
   GroupPurchase,
   CreateGroupPurchaseRequest,
@@ -123,6 +124,10 @@ export const productAPI = {
   getById: async (productId: number): Promise<Product> => {
     const response = await apiClient.get<Product>(`/api/products/${productId}`);
     return response.data;
+  },
+
+  update: async (productId: number, data: UpdateProductRequest): Promise<void> => {
+    await apiClient.put(`/api/products/${productId}`, data);
   },
 
   delete: async (productId: number): Promise<DeleteProductResponse> => {
