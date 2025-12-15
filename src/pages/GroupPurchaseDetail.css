@@ -176,6 +176,50 @@
   flex-wrap: wrap;
 }
 
+.edit-gp-form {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.edit-gp-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.edit-gp-form .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.edit-gp-form .form-group input,
+.edit-gp-form .form-group textarea,
+.edit-gp-form .form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.edit-gp-form .form-group input:focus,
+.edit-gp-form .form-group textarea:focus,
+.edit-gp-form .form-group select:focus {
+  border-color: #fa622f;
+  outline: none;
+}
+
+.edit-form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
 .join-btn,
 .invite-btn {
   padding: 0.75rem 1.5rem;

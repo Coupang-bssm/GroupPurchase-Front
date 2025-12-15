@@ -88,6 +88,14 @@ export interface CreateGroupPurchaseResponse {
   message: string;
 }
 
+export interface UpdateGroupPurchaseRequest {
+  title?: string;
+  description?: string;
+  targetCount?: number;
+  deadline?: string;
+  status?: 'OPEN' | 'CLOSED' | 'COMPLETED';
+}
+
 export interface GroupPurchaseListResponse {
   content: GroupPurchase[];
   pageable: {
@@ -150,6 +158,10 @@ export interface CreateCommentRequest {
 
 export interface CreateCommentResponse {
   message: string;
+}
+
+export interface UpdateCommentRequest {
+  content: string;
 }
 
 export interface DeleteCommentResponse {

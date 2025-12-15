@@ -232,6 +232,46 @@
   cursor: not-allowed;
 }
 
+.edit-form {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 0.5rem 0;
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.875rem;
+  font-family: inherit;
+  resize: none;
+  transition: border-color 0.2s;
+  background: transparent;
+  min-height: 1.5rem;
+}
+
+.edit-input:focus {
+  border-bottom-color: #030303;
+  outline: none;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.edit-btn {
+  color: #065fd4;
+}
+
+.edit-btn:hover {
+  background-color: rgba(6, 95, 212, 0.1);
+}
+
 .comment-children {
   margin-top: 0.5rem;
   margin-left: 3rem;

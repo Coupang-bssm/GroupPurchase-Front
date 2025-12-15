@@ -13,6 +13,7 @@ import type {
   GroupPurchase,
   CreateGroupPurchaseRequest,
   CreateGroupPurchaseResponse,
+  UpdateGroupPurchaseRequest,
   GroupPurchaseListResponse,
   JoinGroupPurchaseResponse,
   ApproveJoinResponse,
@@ -20,6 +21,7 @@ import type {
   Comment,
   CreateCommentRequest,
   CreateCommentResponse,
+  UpdateCommentRequest,
   DeleteCommentResponse,
 } from '@/types';
 
@@ -154,6 +156,10 @@ export const groupPurchaseAPI = {
     return response.data;
   },
 
+  update: async (gpId: number, data: UpdateGroupPurchaseRequest): Promise<void> => {
+    await apiClient.put(`/api/group-purchase/${gpId}`, data);
+  },
+
   delete: async (gpId: number): Promise<DeleteGroupPurchaseResponse> => {
     const response = await apiClient.delete<DeleteGroupPurchaseResponse>(
       `/api/group-purchase/${gpId}`
@@ -179,6 +185,10 @@ export const commentAPI = {
   getById: async (commentId: number): Promise<Comment> => {
     const response = await apiClient.get<Comment>(`/api/comments/${commentId}`);
     return response.data;
+  },
+
+  update: async (commentId: number, data: UpdateCommentRequest): Promise<void> => {
+    await apiClient.put(`/api/comments/${commentId}`, data);
   },
 
   delete: async (commentId: number): Promise<DeleteCommentResponse> => {

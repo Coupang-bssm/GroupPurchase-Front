@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { groupPurchaseAPI, productAPI } from '@/utils/api';
@@ -11,12 +12,31 @@ export default function GroupPurchaseDetail() {
   const queryClient = useQueryClient();
   const gpId = parseInt(id || '0', 10);
   const userId = getCurrentUserId();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    title: '',
+    description: '',
+    targetCount: '',
+    deadline: '',
+    status: 'OPEN' as 'OPEN' | 'CLOSED' | 'COMPLETED',
+  });
 
   const { data: gp, isLoading: gpLoading } = useQuery(
     ['group-purchase', gpId],
     () => groupPurchaseAPI.getById(gpId),
     {
       enabled: !!gpId,
+      onSuccess: (data) => {
+        if (data) {
+          setEditForm({
+            title: data.title,
+            description: data.description,
+            targetCount: data.targetCount.toString(),
+            deadline: data.deadline.slice(0, 16),
+            status: data.status,
+          });
+        }
+      },
     }
   );
 
@@ -42,6 +62,17 @@ export default function GroupPurchaseDetail() {
     },
   });
 
+  const updateMutation = useMutation(
+    (data: { title?: string; description?: string; targetCount?: number; deadline?: string; status?: 'OPEN' | 'CLOSED' | 'COMPLETED' }) =>
+      groupPurchaseAPI.update(gpId, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['group-purchase', gpId]);
+        setIsEditing(false);
+      },
+    }
+  );
+
   const deleteMutation = useMutation(() => groupPurchaseAPI.delete(gpId), {
     onSuccess: () => {
       queryClient.invalidateQueries('group-purchases');
@@ -62,6 +93,33 @@ export default function GroupPurchaseDetail() {
   const handleDelete = () => {
     if (window.confirm('정말 이 공동구매를 삭제하시겠습니까?')) {
       deleteMutation.mutate();
+    }
+  };
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const updateData: {
+      title?: string;
+      description?: string;
+      targetCount?: number;
+      deadline?: string;
+      status?: 'OPEN' | 'CLOSED' | 'COMPLETED';
+    } = {};
+
+    if (editForm.title !== gp?.title) updateData.title = editForm.title;
+    if (editForm.description !== gp?.description) updateData.description = editForm.description;
+    if (parseInt(editForm.targetCount, 10) !== gp?.targetCount) {
+      updateData.targetCount = parseInt(editForm.targetCount, 10);
+    }
+    if (editForm.deadline !== gp?.deadline.slice(0, 16)) {
+      updateData.deadline = editForm.deadline;
+    }
+    if (editForm.status !== gp?.status) updateData.status = editForm.status;
+
+    if (Object.keys(updateData).length > 0) {
+      updateMutation.mutate(updateData);
+    } else {
+      setIsEditing(false);
     }
   };
 
@@ -129,12 +187,101 @@ export default function GroupPurchaseDetail() {
             )}
             {isHost && (
               <>
-                <button onClick={handleCreateInviteLink} className="invite-btn">
-                  참여 링크 생성
-                </button>
-                <button onClick={handleDelete} className="delete-btn" disabled={deleteMutation.isLoading}>
-                  {deleteMutation.isLoading ? '삭제 중...' : '공동구매 삭제'}
-                </button>
+                {!isEditing ? (
+                  <>
+                    <button onClick={() => setIsEditing(true)} className="edit-btn">
+                      수정
+                    </button>
+                    <button onClick={handleCreateInviteLink} className="invite-btn">
+                      참여 링크 생성
+                    </button>
+                    <button onClick={handleDelete} className="delete-btn" disabled={deleteMutation.isLoading}>
+                      {deleteMutation.isLoading ? '삭제 중...' : '공동구매 삭제'}
+                    </button>
+                  </>
+                ) : (
+                  <form onSubmit={handleEditSubmit} className="edit-gp-form">
+                    <div className="form-group">
+                      <label htmlFor="edit-title">제목</label>
+                      <input
+                        type="text"
+                        id="edit-title"
+                        value={editForm.title}
+                        onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="edit-description">설명</label>
+                      <textarea
+                        id="edit-description"
+                        value={editForm.description}
+                        onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                        required
+                        rows={3}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="edit-targetCount">목표 인원</label>
+                      <input
+                        type="number"
+                        id="edit-targetCount"
+                        value={editForm.targetCount}
+                        onChange={(e) => setEditForm({ ...editForm, targetCount: e.target.value })}
+                        required
+                        min="1"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="edit-deadline">마감일시</label>
+                      <input
+                        type="datetime-local"
+                        id="edit-deadline"
+                        value={editForm.deadline}
+                        onChange={(e) => setEditForm({ ...editForm, deadline: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="edit-status">상태</label>
+                      <select
+                        id="edit-status"
+                        value={editForm.status}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, status: e.target.value as 'OPEN' | 'CLOSED' | 'COMPLETED' })
+                        }
+                        required
+                      >
+                        <option value="OPEN">진행중</option>
+                        <option value="CLOSED">마감</option>
+                        <option value="COMPLETED">완료</option>
+                      </select>
+                    </div>
+                    <div className="edit-form-actions">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsEditing(false);
+                          if (gp) {
+                            setEditForm({
+                              title: gp.title,
+                              description: gp.description,
+                              targetCount: gp.targetCount.toString(),
+                              deadline: gp.deadline.slice(0, 16),
+                              status: gp.status,
+                            });
+                          }
+                        }}
+                        className="cancel-btn"
+                      >
+                        취소
+                      </button>
+                      <button type="submit" className="submit-btn" disabled={updateMutation.isLoading}>
+                        {updateMutation.isLoading ? '수정 중...' : '수정 완료'}
+                      </button>
+                    </div>
+                  </form>
+                )}
               </>
             )}
           </div>

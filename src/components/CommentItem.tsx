@@ -14,10 +14,22 @@ interface CommentItemProps {
 export default function CommentItem({ comment, gpId, depth = 0 }: CommentItemProps) {
   const queryClient = useQueryClient();
   const [isReplying, setIsReplying] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [showReplies, setShowReplies] = useState(true);
   const [replyContent, setReplyContent] = useState('');
+  const [editContent, setEditContent] = useState(comment.content);
   const userId = getCurrentUserId();
   const isOwner = comment.userId === userId;
+
+  const updateMutation = useMutation(
+    (content: string) => commentAPI.update(comment.id, { content }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['comments', gpId]);
+        setIsEditing(false);
+      },
+    }
+  );
 
   const deleteMutation = useMutation(() => commentAPI.delete(comment.id), {
     onSuccess: () => {
@@ -46,6 +58,13 @@ export default function CommentItem({ comment, gpId, depth = 0 }: CommentItemPro
     e.preventDefault();
     if (replyContent.trim()) {
       createReplyMutation.mutate(replyContent);
+    }
+  };
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editContent.trim()) {
+      updateMutation.mutate(editContent);
     }
   };
 
@@ -83,26 +102,72 @@ export default function CommentItem({ comment, gpId, depth = 0 }: CommentItemPro
           <span className="comment-author">사용자 {comment.userId}</span>
           <span className="comment-date">{formatDate(comment.createdAt)}</span>
         </div>
-        <p className="comment-text">{comment.content}</p>
-        <div className="comment-actions">
-          {!isReplying && (
-            <button onClick={() => setIsReplying(true)} className="comment-action-btn reply-btn">
-              <svg viewBox="0 0 24 24">
-                <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
-              </svg>
-              답글
-            </button>
-          )}
-          {isOwner && (
-            <button
-              onClick={handleDelete}
-              className="comment-action-btn delete-btn"
-              disabled={deleteMutation.isLoading}
-            >
-              {deleteMutation.isLoading ? '삭제 중...' : '삭제'}
-            </button>
-          )}
-        </div>
+        {isEditing ? (
+          <form onSubmit={handleEditSubmit} className="edit-form">
+            <textarea
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              placeholder="댓글 수정..."
+              rows={1}
+              className="edit-input"
+              onInput={(e) => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = target.scrollHeight + 'px';
+              }}
+            />
+            <div className="edit-actions">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditContent(comment.content);
+                }}
+                className="cancel-btn"
+              >
+                취소
+              </button>
+              <button
+                type="submit"
+                className="submit-btn"
+                disabled={updateMutation.isLoading}
+              >
+                {updateMutation.isLoading ? '수정 중...' : '수정'}
+              </button>
+            </div>
+          </form>
+        ) : (
+          <>
+            <p className="comment-text">{comment.content}</p>
+            <div className="comment-actions">
+              {!isReplying && (
+                <button onClick={() => setIsReplying(true)} className="comment-action-btn reply-btn">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+                  </svg>
+                  답글
+                </button>
+              )}
+              {isOwner && (
+                <>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="comment-action-btn edit-btn"
+                  >
+                    수정
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="comment-action-btn delete-btn"
+                    disabled={deleteMutation.isLoading}
+                  >
+                    {deleteMutation.isLoading ? '삭제 중...' : '삭제'}
+                  </button>
+                </>
+              )}
+            </div>
+          </>
+        )}
         {isReplying && (
           <form onSubmit={handleReplySubmit} className="reply-form">
             <div className="reply-avatar">{getInitials(userId || 0)}</div>
