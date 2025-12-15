@@ -177,3 +177,27 @@ export interface JwtPayload {
   exp: number;
 }
 
+// 에러 응답 타입
+export interface ErrorResponse {
+  status: number;
+  message: string;
+  errorCode?: string;
+}
+
+// 백엔드 ErrorCode 매핑
+export enum ErrorCode {
+  // 404 Not Found
+  USER_NOT_FOUND = 'USER_NOT_FOUND',
+  PRODUCT_NOT_FOUND = 'PRODUCT_NOT_FOUND',
+  GROUP_PURCHASE_NOT_FOUND = 'GROUP_PURCHASE_NOT_FOUND',
+  GROUP_PURCHASE_JOIN_NOT_FOUND = 'GROUP_PURCHASE_JOIN_NOT_FOUND',
+  COMMENT_NOT_FOUND = 'COMMENT_NOT_FOUND',
+  // 409 Conflict
+  EMAIL_ALREADY_EXISTS = 'EMAIL_ALREADY_EXISTS',
+  USERNAME_ALREADY_EXISTS = 'USERNAME_ALREADY_EXISTS',
+  // 401 Unauthorized
+  USER_NOT_AUTHENTICATED = 'USER_NOT_AUTHENTICATED',
+  // 500 Internal Server Error
+  INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
+}
+

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { groupPurchaseAPI, productAPI } from '@/utils/api';
+import { getErrorMessage } from '@/utils/errorHandler';
 import './GroupPurchaseCreate.css';
 
 export default function GroupPurchaseCreate() {
@@ -33,8 +34,8 @@ export default function GroupPurchaseCreate() {
         alert('공동구매가 생성되었습니다.');
         navigate('/group-purchases');
       },
-      onError: (err: any) => {
-        setError(err.response?.data?.message || '공동구매 생성에 실패했습니다.');
+      onError: (err: unknown) => {
+        setError(getErrorMessage(err, '공동구매 생성에 실패했습니다.'));
       },
     }
   );

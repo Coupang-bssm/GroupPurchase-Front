@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
 import { productAPI } from '@/utils/api';
+import { getErrorMessage } from '@/utils/errorHandler';
 import './ProductCreate.css';
 
 export default function ProductCreate() {
@@ -24,8 +25,8 @@ export default function ProductCreate() {
         alert('상품이 등록되었습니다.');
         navigate('/products');
       },
-      onError: (err: any) => {
-        setError(err.response?.data?.message || '상품 등록에 실패했습니다.');
+      onError: (err: unknown) => {
+        setError(getErrorMessage(err, '상품 등록에 실패했습니다.'));
       },
     }
   );

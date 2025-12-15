@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '@/utils/api';
+import { getErrorMessage } from '@/utils/errorHandler';
 import './Auth.css';
 
 export default function Signup() {
@@ -31,8 +32,8 @@ export default function Signup() {
       await authAPI.signup(formData);
       alert('회원가입이 완료되었습니다. 로그인해주세요.');
       navigate('/login');
-    } catch (err: any) {
-      setError(err.response?.data?.message || '회원가입에 실패했습니다.');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, '회원가입에 실패했습니다.'));
     } finally {
       setLoading(false);
     }

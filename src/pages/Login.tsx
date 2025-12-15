@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '@/utils/api';
+import { getErrorMessage } from '@/utils/errorHandler';
 import './Auth.css';
 
 export default function Login() {
@@ -28,8 +29,8 @@ export default function Login() {
     try {
       await authAPI.login(formData);
       navigate('/products');
-    } catch (err: any) {
-      setError(err.response?.data?.message || '로그인에 실패했습니다.');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, '로그인에 실패했습니다.'));
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
+import { extractErrorResponse } from './errorHandler';
 import type {
   SignupRequest,
   SignupResponse,
@@ -50,15 +51,27 @@ apiClient.interceptors.request.use(
   }
 );
 
-// 응답 인터셉터: 401 에러 시 로그아웃 처리
+// 응답 인터셉터: 에러 처리
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
+    const errorResponse = extractErrorResponse(error);
+
+    // 401 에러: 인증 실패 시 로그아웃 처리
+    if (errorResponse.status === 401) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       window.location.href = '/login';
+      return Promise.reject(error);
     }
+
+    // 404 에러: 리소스를 찾을 수 없음
+    if (errorResponse.status === 404) {
+      // 특정 페이지에서는 에러를 그대로 전달하여 각 페이지에서 처리
+      return Promise.reject(error);
+    }
+
+    // 기타 에러는 그대로 전달
     return Promise.reject(error);
   }
 );
